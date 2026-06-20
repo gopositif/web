@@ -936,8 +936,8 @@
 
   <!-- ==================== LOGIC UTAMA SCRIPT ==================== -->
   <script>
-    // MASUKKAN URL WEB APP GOOGLE APPS SCRIPT ANDA DI SINI
-    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbx3r130gQ5EGXGTVeCWuSEqQ8RkHZbDi2NY2VpftvL1SZ34hfdQuAklRLfXLjZMdwuJ/exec";
+    // MASUKKAN URL WEB APP GOOGLE APPS SCRIPT ANDA DI SINI (Akhiran /exec)
+    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwcJlSwHcCXKk1fxCdbsp7sGgpduo6fyOVfN-NqRFzxmkSzW85pc0cIozlAKUr69E79/exec";
 
     let currentUser = null;
     let chartMineral1Instance = null;
@@ -974,10 +974,19 @@
           headers: { "Content-Type": "text/plain" },
           body: JSON.stringify({ action, payload })
         });
-        return await response.json();
+        
+        if (!response.ok) {
+          throw new Error(`HTTP Error Status: ${response.status}`);
+        }
+        
+        const resJson = await response.json();
+        return resJson;
       } catch (err) {
         console.error("Kesalahan API:", err);
-        return { success: false, message: "Koneksi ke server terputus!" };
+        return { 
+          success: false, 
+          message: "Koneksi ke server terputus! Pastikan Script Anda telah dideploy dengan benar (Execute as: Me, Who has access: Anyone) dan Anda menggunakan URL /exec yang valid." 
+        };
       }
     }
 
@@ -994,6 +1003,7 @@
         pwdField.type = 'text';
         icon.classList.replace('fa-eye', 'fa-eye-slash');
       } else {
+        pwdField.type = 'text';
         pwdField.type = 'password';
         icon.classList.replace('fa-eye-slash', 'fa-eye');
       }
@@ -1002,11 +1012,13 @@
     function showLoading(show, message = 'Sedang Memproses...') {
       const overlay = document.getElementById('loadingOverlay');
       const msgText = document.getElementById('loadingMessage');
-      if (show) {
-        msgText.innerText = message;
-        overlay.classList.remove('hidden');
-      } else {
-        overlay.classList.add('hidden');
+      if (overlay && msgText) {
+        if (show) {
+          msgText.innerText = message;
+          overlay.classList.remove('hidden');
+        } else {
+          overlay.classList.add('hidden');
+        }
       }
     }
 
@@ -1027,8 +1039,8 @@
 
     async function handleLogin(event) {
       event.preventDefault();
-      const userVal = document.getElementById('username').value;
-      const passVal = document.getElementById('password').value;
+      const userVal = document.getElementById('username').value.trim();
+      const passVal = document.getElementById('password').value.trim();
       const errorDiv = document.getElementById('loginError');
 
       errorDiv.classList.add('hidden');
@@ -1036,6 +1048,7 @@
 
       const response = await callBackend("checkLogin", { username: userVal, password: passVal });
       showLoading(false);
+      
       if (response.success) {
         currentUser = response.user;
         onLoginSuccess();
@@ -1396,7 +1409,7 @@
         setAbsenTab('jepret-qr');
         Swal.fire({
           title: "Beralih ke Scan QR Jepret",
-          text: "Izin kamera diblokir oleh sistem sandbox Google Apps Script. Kami mengalihkan Anda otomatis ke metode jepret foto.",
+          text: "Izin kamera langsung terhambat oleh kebijakan privasi sandbox. Sistem secara otomatis mengalihkan Anda ke metode jepret foto.",
           icon: "info",
           confirmButtonColor: '#4f46e5'
         });
@@ -1913,12 +1926,12 @@
 
     function getFallbackStats() {
       return {
-        posyanduMineral1: { nama: 'MINERAL 1', Kader: 5, Balita: 20, Remaja: 15, Bumil: 5, UsiaProduktif: 12, Lansia: 10, total: 67 },
-        posyanduMineral2: { nama: 'MINERAL 2', Kader: 4, Balita: 18, Remaja: 12, Bumil: 4, UsiaProduktif: 15, Lansia: 14, total: 67 },
-        posyanduMawar: { nama: 'MAWAR', Kader: 8, Balita: 25, Remaja: 20, Bumil: 12, UsiaProduktif: 22, Lansia: 18, total: 105 },
-        posyanduSejahtera: { nama: 'SEJAHTERA', Kader: 6, Balita: 24, Remaja: 18, Bumil: 8, UsiaProduktif: 20, Lansia: 15, total: 91 },
-        posyanduProtein: { nama: 'PROTEIN', Kader: 5, Balita: 22, Remaja: 16, Bumil: 7, UsiaProduktif: 17, Lansia: 12, total: 79 },
-        posyanduVitamin: { nama: 'VITAMIN', Kader: 7, Balita: 30, Remaja: 19, Bumil: 9, UsiaProduktif: 19, Lansia: 16, total: 100 }
+        posyanduMineral1: { nama: 'MINERAL 1', Kader: 0, Balita: 0, Remaja: 0, Bumil: 0, UsiaProduktif: 0, Lansia: 0, total: 0 },
+        posyanduMineral2: { nama: 'MINERAL 2', Kader: 0, Balita: 0, Remaja: 0, Bumil: 0, UsiaProduktif: 0, Lansia: 0, total: 0 },
+        posyanduMawar: { nama: 'MAWAR', Kader: 0, Balita: 0, Remaja: 0, Bumil: 0, UsiaProduktif: 0, Lansia: 0, total: 0 },
+        posyanduSejahtera: { nama: 'SEJAHTERA', Kader: 0, Balita: 0, Remaja: 0, Bumil: 0, UsiaProduktif: 0, Lansia: 0, total: 0 },
+        posyanduProtein: { nama: 'PROTEIN', Kader: 0, Balita: 0, Remaja: 0, Bumil: 0, UsiaProduktif: 0, Lansia: 0, total: 0 },
+        posyanduVitamin: { nama: 'VITAMIN', Kader: 0, Balita: 0, Remaja: 0, Bumil: 0, UsiaProduktif: 0, Lansia: 0, total: 0 }
       };
     }
 
