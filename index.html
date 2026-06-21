@@ -15,6 +15,8 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js"></script>
   <script src="https://unpkg.com/html5-qrcode"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.23/jspdf.plugin.autotable.min.js"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
   <script>
@@ -23,10 +25,10 @@
         extend: {
           fontFamily: { sans: ['Inter', 'sans-serif'] },
           colors: {
-            primary: '#1e293b', // Slate Navy Premium
-            secondary: '#0ea5e9', // Deep Ocean Blue
-            accent: '#4f46e5', // Royal Purple Accent
-            dark: '#0f172a', // High Contrast Midnight
+            primary: '#1e293b',
+            secondary: '#0ea5e9',
+            accent: '#4f46e5',
+            dark: '#0f172a',
           }
         }
       }
@@ -103,7 +105,7 @@
     <p id="loadingMessage" class="text-sm font-semibold tracking-wider text-center px-6">Sedang Memproses...</p>
   </div>
 
-  <!-- ==================== HALAMAN LOGIN (PORTAL PORTAL) ==================== -->
+  <!-- ==================== HALAMAN LOGIN ==================== -->
   <div id="loginPage" class="relative min-h-screen flex flex-col items-center justify-center p-4 overflow-hidden bg-slate-950">
     <div class="absolute inset-0 z-0">
       <div class="absolute inset-0 bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950"></div>
@@ -187,6 +189,31 @@
             </button>
           </form>
 
+                   <!-- PANEl PENGATURAN KONEKSI API SECARA SECURE (GIRL ICON) -->
+          <div class="mt-6 text-center">
+            <button type="button" onclick="toggleApiSettings()" class="text-xs text-slate-350 hover:text-white transition-all underline">
+              <i class="fas fa-cog mr-1"></i> Konfigurasi Integrasi Google Apps Script (GitHub Pages)
+            </button>
+          </div>
+
+          <div id="apiSettingsArea" class="hidden mt-4 p-5 bg-black/45 border border-white/10 rounded-2xl space-y-3.5 text-left animate-fade-in">
+            <h4 class="text-xs font-bold text-sky-300 uppercase tracking-wider flex items-center gap-1.5 border-b border-white/10 pb-2">
+              <i class="fas fa-network-wired"></i> Konfigurasi Server API
+            </h4>
+            <div>
+              <label class="block text-[10px] font-bold text-slate-300 uppercase mb-1">Web App Exec URL *</label>
+              <input type="text" id="api_url_input" class="block w-full px-3.5 py-2.5 bg-black/35 border border-white/15 rounded-xl text-white text-xs outline-none focus:border-indigo-400 transition-all" placeholder="https://script.google.com/macros/s/.../exec">
+            </div>
+            <div>
+              <label class="block text-[10px] font-bold text-slate-300 uppercase mb-1">API Token Keamanan *</label>
+              <input type="password" id="api_token_input" class="block w-full px-3.5 py-2.5 bg-black/35 border border-white/15 rounded-xl text-white text-xs outline-none focus:border-indigo-400 transition-all" placeholder="GOPOSITIF_XXXXXX">
+            </div>
+            <button type="button" onclick="saveApiSettings()" class="w-full py-2.5 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white font-bold text-xs rounded-xl shadow-md transition-all">
+              SIMPAN INTEGRASI SERVER
+            </button>
+          </div>
+
+
           <div id="loginError" class="mt-4 hidden p-3.5 bg-red-950/90 border border-red-500/40 rounded-xl flex items-start gap-3 animate-fade-in">
             <i class="fas fa-exclamation-circle text-red-400 text-lg mt-0.5"></i>
             <div>
@@ -197,10 +224,6 @@
         </div>
       </div>
     </div>
-
-    <p class="absolute bottom-6 left-1/2 -translate-x-1/2 text-slate-400 text-xs font-semibold tracking-wider opacity-60 z-20 text-center w-full px-4">
-      Copyright © 2026 L. All Rights Reserved
-    </p>
   </div>
 
   <!-- ==================== DASHBOARD & MENU UTAMA ==================== -->
@@ -209,12 +232,12 @@
       <div class="p-6 border-b border-slate-800 flex items-center justify-between">
         <div class="flex items-center gap-3">
           <div class="w-12 h-12 rounded-lg bg-white flex items-center justify-center overflow-hidden">
-  <img src="https://lh3.googleusercontent.com/d/1zZJgNT0UrqG9zvDXUwUReoAgxy5ltLjS" alt="GO-POSITIF Logo" class="w-full h-full object-cover" onerror="this.src='https://lh3.googleusercontent.com/d/1zZJgNT0UrqG9zvDXUwUReoAgxy5ltLjS';">
-</div>
-<div class="flex flex-col justify-center">
-  <h2 class="font-bold text-base leading-none text-white mb-0.5">GO-POSITIF</h2>
-  <span class="text-[11px] text-slate-400 font-medium leading-none">POSYANDU GONOHARJO</span>
-</div>
+            <img src="https://lh3.googleusercontent.com/d/1zZJgNT0UrqG9zvDXUwUReoAgxy5ltLjS" alt="GO-POSITIF Logo" class="w-full h-full object-cover" onerror="this.src='https://lh3.googleusercontent.com/d/1zZJgNT0UrqG9zvDXUwUReoAgxy5ltLjS';">
+          </div>
+          <div class="flex flex-col justify-center">
+            <h2 class="font-bold text-base leading-none text-white mb-0.5">GO-POSITIF</h2>
+            <span class="text-[11px] text-slate-400 font-medium leading-none">POSYANDU GONOHARJO</span>
+          </div>
         </div>
         <button id="mobileNavToggle" class="md:hidden text-slate-400 hover:text-white" onclick="toggleMobileSidebar()">
           <i class="fas fa-bars text-xl"></i>
@@ -230,6 +253,12 @@
         </button>
         <button onclick="switchView('input-pemeriksaan')" id="nav-input-pemeriksaan" class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all text-slate-400 hover:bg-slate-800 hover:text-white border-l-4 border-transparent">
           <i class="fas fa-heartbeat text-lg"></i> Input Pemeriksaan
+        </button>
+        <button onclick="switchView('laporan')" id="nav-laporan" class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all text-slate-400 hover:bg-slate-800 hover:text-white border-l-4 border-transparent">
+          <i class="fas fa-file-invoice-dollar text-lg"></i> Laporan Cakupan
+        </button>
+        <button onclick="switchView('pengecekan')" id="nav-pengecekan" class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all text-slate-400 hover:bg-slate-800 hover:text-white border-l-4 border-transparent">
+          <i class="fas fa-search text-lg"></i> Pengecekan Sasaran
         </button>
 
         <div class="pt-6 border-t border-slate-800 mt-6">
@@ -417,7 +446,6 @@
             </div>
 
             <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-              <!-- Sisi Kiri: Panel Input Form -->
               <div class="lg:col-span-5 bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden flex flex-col">
                 <div class="bg-gradient-to-r from-indigo-700 to-indigo-600 p-6 text-white shrink-0">
                   <h4 class="font-bold text-md flex items-center gap-2">
@@ -426,7 +454,6 @@
                   <p class="text-[11px] text-indigo-100 mt-1">Pilih tab metode absensi aktif</p>
                 </div>
 
-                <!-- Tab Headers -->
                 <div class="flex flex-wrap border-b border-slate-200 bg-slate-50">
                   <button onclick="setAbsenTab('manual')" id="tabHeader-manual" class="flex-1 min-w-[25%] py-3 text-center text-[11px] font-bold border-b-2 border-transparent text-slate-500 hover:text-slate-800 transition-all flex items-center justify-center gap-1.5 outline-none">
                     <i class="fas fa-keyboard"></i> Manual
@@ -442,7 +469,6 @@
                   </button>
                 </div>
 
-                <!-- Tab Contents -->
                 <div class="p-6 shrink-0 font-sans">
                   <!-- METODE 1: MANUAL -->
                   <div id="tabContent-manual" class="space-y-4">
@@ -616,11 +642,10 @@
             </div>
 
             <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-              <!-- Form Pencarian -->
               <div class="lg:col-span-4 bg-white rounded-3xl border border-slate-200 shadow-sm p-6 space-y-4">
                 <div class="bg-gradient-to-br from-indigo-50 to-indigo-100/30 p-4 rounded-2xl border border-indigo-100">
                   <h4 class="font-bold text-xs text-indigo-900 flex items-center gap-1.5 mb-1">
-                    <i class="fas fa-shield-alt text-indigo-600"></i> Syarat Input Pemeriksaan
+                    <i class="fas fa-id-card text-indigo-600"></i> Syarat Input Pemeriksaan
                   </h4>
                   <ul class="text-[10px] text-indigo-800 list-disc list-inside space-y-1">
                     <li>Anggota harus sudah terdaftar di Data Master.</li>
@@ -635,7 +660,7 @@
                       <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
                         <i class="fas fa-id-card"></i>
                       </div>
-                      <input type="text" id="examVerifyInput" class="block w-full pl-9 pr-3 py-2.5 border border-slate-200 rounded-xl text-xs font-bold uppercase tracking-wider focus:ring-2 focus:ring-indigo-500 focus:outline-none outline-none" placeholder="Contoh: KDR-MAW1">
+                      <input type="text" id="examVerifyInput" class="block w-full pl-9 pr-3 py-2.5 border border-slate-200 rounded-xl text-xs font-bold uppercase tracking-wider focus:ring-2 focus:ring-indigo-500 focus:outline-none outline-none" placeholder="Contoh: BLA-MAW1">
                     </div>
                     <button onclick="handleVerifyPemeriksaan()" class="px-4 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold rounded-xl transition-all shadow-md outline-none">Verifikasi</button>
                   </div>
@@ -664,7 +689,7 @@
                 </div>
               </div>
 
-              <!-- Form Parameter Hasil Pemeriksaan -->
+              <!-- Formulir Input Utama -->
               <div class="lg:col-span-8 bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden flex flex-col">
                 <div class="bg-gradient-to-r from-indigo-700 to-indigo-600 p-5 text-white flex items-center justify-between">
                   <div>
@@ -676,7 +701,6 @@
 
                 <form id="pemeriksaanForm" onsubmit="submitPemeriksaanForm(event)" class="p-6 space-y-5">
                   <fieldset id="pemeriksaanFields" class="space-y-5" disabled>
-
                     <!-- AREA FORMULIR KHUSUS BALITA -->
                     <div id="formBalitaArea" class="hidden space-y-5">
                       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -716,8 +740,8 @@
                           <label class="block text-xs font-bold text-slate-500 uppercase mb-1">PB/TB menurut Umur *</label>
                           <select id="pTBU_Balita" class="block w-full py-2 px-3 border border-slate-200 rounded-xl text-xs font-semibold focus:ring-2 focus:ring-indigo-500 focus:outline-none bg-white outline-none cursor-pointer">
                             <option value="">-- Pilih Status --</option>
-                            <option value="Sangat Pendek">Sangat Pendek (Severely Stunted)</option>
-                            <option value="Pendek">Pendek (Stunted)</option>
+                            <option value="Sangat Pendek">Sangat Pendek</option>
+                            <option value="Pendek">Pendek</option>
                             <option value="Normal">Normal</option>
                             <option value="Tinggi">Tinggi</option>
                           </select>
@@ -726,24 +750,26 @@
                           <label class="block text-xs font-bold text-slate-500 uppercase mb-1">BB menurut PB/TB *</label>
                           <select id="pBBTB_Balita" class="block w-full py-2 px-3 border border-slate-200 rounded-xl text-xs font-semibold focus:ring-2 focus:ring-indigo-500 focus:outline-none bg-white outline-none cursor-pointer">
                             <option value="">-- Pilih Status --</option>
-                            <option value="Gizi Buruk">Gizi Buruk (Severely Wasted)</option>
-                            <option value="Gizi Kurang">Gizi Kurang (Wasted)</option>
-                            <option value="Gizi Baik">Gizi Baik (Normal)</option>
+                            <option value="Gizi Buruk">Gizi Buruk</option>
+                            <option value="Gizi Kurang">Gizi Kurang</option>
+                            <option value="Gizi Baik">Gizi Baik</option>
                             <option value="Berisiko Gizi Lebih">Berisiko Gizi Lebih</option>
-                            <option value="Gizi Lebih">Gizi Lebih (Overweight)</option>
-                            <option value="Obesitas">Obesitas (Obese)</option>
+                            <option value="Gizi Lebih">Gizi Lebih</option>
+                            <option value="Obesitas">Obesitas</option>
                           </select>
                         </div>
                       </div>
 
+                      <!-- INPUT YANG DIMINTA USER: STATUS N/T DIPERBARUI -->
                       <div>
-                        <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Status N/T/2T/O *</label>
+                        <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Status N/T (Tumbuh Kembang) *</label>
                         <select id="pStatusNutrisi_Balita" class="block w-full py-2 px-3 border border-slate-200 rounded-xl text-xs font-semibold focus:ring-2 focus:ring-indigo-500 focus:outline-none bg-white outline-none cursor-pointer">
                           <option value="">-- Pilih Status --</option>
                           <option value="N (Naik)">N (Naik)</option>
-                          <option value="T (Tetap)">T (Tetap)</option>
-                          <option value="2T (2 Kali berturut-turut tidak naik)">2T (2 Kali berturut-turut tidak naik)</option>
-                          <option value="O (Overweight)">O (Overweight)</option>
+                          <option value="T (TURUN)">T (TURUN)</option>
+                          <option value="2T (TETAP)">2T (TETAP)</option>
+                          <option value="O (DatangKembali)">O (DatangKembali)</option>
+                          <option value="B (BalitaBaru)">B (BalitaBaru)</option>
                         </select>
                       </div>
                     </div>
@@ -823,6 +849,280 @@
                     <button type="submit" id="btnSavePemeriksaan" class="px-5 py-2.5 bg-gradient-to-r from-indigo-600 to-sky-600 hover:from-indigo-700 hover:to-sky-700 text-white font-bold text-xs rounded-xl transition-all shadow-md outline-none" disabled>Simpan Pemeriksaan</button>
                   </div>
                 </form>
+              </div>
+            </div>
+          </section>
+
+          <!-- ==================== SEKSI: TAB LAPORAN CAKUPAN ==================== -->
+          <section id="view-laporan" class="view-section animate-fade-in space-y-6">
+            <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm space-y-4">
+              <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                <div>
+                  <h3 class="font-extrabold text-slate-800 text-lg">Cakupan Kehadiran & Status N/T Balita</h3>
+                  <p class="text-xs text-slate-500 font-sans">Tinjau metrik partisipasi bulanan posyandu serta rekapitulasi status tumbuh kembang anak se-desa.</p>
+                </div>
+
+                <div class="flex flex-wrap items-center gap-2">
+                  <select id="lap-bulan" class="bg-white border border-slate-200 text-slate-800 text-xs font-bold rounded-xl py-2 px-3 focus:outline-none focus:ring-2 focus:ring-indigo-500 cursor-pointer">
+                    <option value="1">Januari</option>
+                    <option value="2">Februari</option>
+                    <option value="3">Maret</option>
+                    <option value="4">April</option>
+                    <option value="5">Mei</option>
+                    <option value="6">Juni</option>
+                    <option value="7">Juli</option>
+                    <option value="8">Agustus</option>
+                    <option value="9">September</option>
+                    <option value="10">Oktober</option>
+                    <option value="11">November</option>
+                    <option value="12">Desember</option>
+                  </select>
+
+                  <select id="lap-tahun" class="bg-white border border-slate-200 text-slate-800 text-xs font-bold rounded-xl py-2 px-3 focus:outline-none focus:ring-2 focus:ring-indigo-500 cursor-pointer">
+                    <option value="2026">2026</option>
+                    <option value="2025">2025</option>
+                    <option value="2024">2024</option>
+                  </select>
+
+                  <button onclick="fetchLaporanData()" class="p-2.5 bg-indigo-50 hover:bg-indigo-100 text-indigo-600 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-colors border border-indigo-200">
+                    <i class="fa-solid fa-arrows-rotate"></i> Refresh
+                  </button>
+
+                  <button onclick="exportLaporanExcel()" class="p-2.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-600 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-colors border border-emerald-100">
+                    <i class="fa-regular fa-file-excel text-base"></i> Excel
+                  </button>
+
+                  <button onclick="exportLaporanPDF()" class="p-2.5 bg-rose-50 hover:bg-rose-100 text-rose-600 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-colors border border-rose-100">
+                    <i class="fa-regular fa-file-pdf text-base"></i> PDF
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 items-stretch">
+              <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm lg:col-span-2 flex flex-col justify-between">
+                <h4 class="font-bold text-slate-800 text-sm mb-4">Grafik Distribusi Kehadiran Per Kategori Posyandu</h4>
+                <div class="relative h-80">
+                  <canvas id="chartLaporanCakupan"></canvas>
+                </div>
+              </div>
+
+              <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm flex flex-col">
+                <h4 class="font-bold text-slate-800 text-sm mb-2">Tingkat Tren Kehadiran Posyandu</h4>
+                <p class="text-[10px] text-slate-400 font-sans mb-4">*Dibandingkan dengan capaian bulan sebelumnya</p>
+                <div id="container-tren-posyandu" class="space-y-4 max-h-80 overflow-y-auto pr-1">
+                  <p class="text-xs text-slate-400 text-center py-10">Menghubungkan ke server...</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm space-y-6">
+              <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 border-b border-slate-100 pb-4">
+                <div>
+                  <h4 class="font-extrabold text-slate-800 text-base">Analisis & Grafik Perkembangan Status Balita (N/T/2T/O/B)</h4>
+                  <p class="text-xs text-slate-500">Filter data berdasarkan wilayah Posyandu dan jenis Status Balita untuk visualisasi diagram serta ekspor laporan.</p>
+                </div>
+              </div>
+
+              <!-- Interactive Filters Panel -->
+              <div class="grid grid-cols-1 md:grid-cols-3 gap-6 bg-slate-50 p-5 rounded-2xl border border-slate-200/60">
+                <!-- Filter 1: Pilih Posyandu -->
+                <div class="space-y-1.5">
+                  <label for="lap-posyandu-filter" class="block text-xs font-bold text-slate-600 uppercase tracking-wider">Filter Wilayah Posyandu</label>
+                  <select id="lap-posyandu-filter" onchange="updateStatusDiagramAndTable()" class="w-full bg-white border border-slate-200 text-slate-800 text-xs font-bold rounded-xl py-2.5 px-3 focus:outline-none focus:ring-2 focus:ring-indigo-500 cursor-pointer outline-none">
+                    <option value="SEMUA">Semua Posyandu</option>
+                    <option value="MINERAL 1">MINERAL 1</option>
+                    <option value="MINERAL 2">MINERAL 2</option>
+                    <option value="MAWAR">MAWAR</option>
+                    <option value="SEJAHTERA">SEJAHTERA</option>
+                    <option value="PROTEIN">PROTEIN</option>
+                    <option value="VITAMIN">VITAMIN</option>
+                  </select>
+                </div>
+
+                <!-- Filter 2: Pilih Status N/T -->
+                <div class="md:col-span-2 space-y-2">
+                  <label class="block text-xs font-bold text-slate-600 uppercase tracking-wider">Pilih Status Balita (N/T/2T/O/B)</label>
+                  <div class="flex flex-wrap gap-3">
+                    <label class="inline-flex items-center bg-white px-3 py-2 rounded-xl border border-slate-200 cursor-pointer shadow-sm hover:bg-slate-50 transition-colors">
+                      <input type="checkbox" id="chk-status-N" checked onchange="updateStatusDiagramAndTable()" class="form-checkbox h-4 w-4 text-indigo-600 rounded focus:ring-indigo-500">
+                      <span class="ml-2 text-xs font-semibold text-slate-700">N (Naik)</span>
+                    </label>
+                    <label class="inline-flex items-center bg-white px-3 py-2 rounded-xl border border-slate-200 cursor-pointer shadow-sm hover:bg-slate-50 transition-colors">
+                      <input type="checkbox" id="chk-status-T" checked onchange="updateStatusDiagramAndTable()" class="form-checkbox h-4 w-4 text-indigo-600 rounded focus:ring-indigo-500">
+                      <span class="ml-2 text-xs font-semibold text-slate-700">T (TURUN)</span>
+                    </label>
+                    <label class="inline-flex items-center bg-white px-3 py-2 rounded-xl border border-slate-200 cursor-pointer shadow-sm hover:bg-slate-50 transition-colors">
+                      <input type="checkbox" id="chk-status-2T" checked onchange="updateStatusDiagramAndTable()" class="form-checkbox h-4 w-4 text-indigo-600 rounded focus:ring-indigo-500">
+                      <span class="ml-2 text-xs font-semibold text-slate-700">2T (TETAP)</span>
+                    </label>
+                    <label class="inline-flex items-center bg-white px-3 py-2 rounded-xl border border-slate-200 cursor-pointer shadow-sm hover:bg-slate-50 transition-colors">
+                      <input type="checkbox" id="chk-status-O" checked onchange="updateStatusDiagramAndTable()" class="form-checkbox h-4 w-4 text-indigo-600 rounded focus:ring-indigo-500">
+                      <span class="ml-2 text-xs font-semibold text-slate-700">O (DatangKembali)</span>
+                    </label>
+                    <label class="inline-flex items-center bg-white px-3 py-2 rounded-xl border border-slate-200 cursor-pointer shadow-sm hover:bg-slate-50 transition-colors">
+                      <input type="checkbox" id="chk-status-B" checked onchange="updateStatusDiagramAndTable()" class="form-checkbox h-4 w-4 text-indigo-600 rounded focus:ring-indigo-500">
+                      <span class="ml-2 text-xs font-semibold text-slate-700">B (BalitaBaru)</span>
+                    </label>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Visualization & Statistics Summary -->
+              <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
+                <!-- Left: Interactive Diagram -->
+                <div class="lg:col-span-5 bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex flex-col justify-center min-h-[320px]">
+                  <h5 class="text-xs font-bold text-slate-700 mb-4 uppercase tracking-wider text-center">Diagram Distribusi Status Balita</h5>
+                  <div class="relative h-[250px] w-full flex items-center justify-center">
+                    <canvas id="chartStatusBalita" class="w-full h-full"></canvas>
+                  </div>
+                </div>
+
+                <!-- Right: Tabular Summary -->
+                <div class="lg:col-span-7 bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex flex-col justify-between">
+                  <div>
+                    <h5 class="text-xs font-bold text-slate-700 mb-4 uppercase tracking-wider">Tabel Ringkasan Jumlah & Persentase</h5>
+                    <div class="overflow-x-auto">
+                      <table class="w-full text-left border-collapse text-xs">
+                        <thead>
+                          <tr class="bg-slate-50 text-slate-500 font-bold uppercase text-[10px]">
+                            <th class="py-2.5 px-3 border-b border-slate-200">Status Balita</th>
+                            <th class="py-2.5 px-3 border-b border-slate-200 text-center">Kode</th>
+                            <th class="py-2.5 px-3 border-b border-slate-200 text-center">Jumlah Balita</th>
+                            <th class="py-2.5 px-3 border-b border-slate-200 text-right">Persentase (%)</th>
+                          </tr>
+                        </thead>
+                        <tbody id="tbody-status-summary" class="divide-y divide-slate-100 font-medium">
+                          <!-- Dynamic rows generated by Javascript -->
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                  
+                  <div class="mt-4 pt-4 border-t border-slate-100 flex items-center justify-between text-xs font-bold text-slate-700">
+                    <span>TOTAL BALITA FILTERED</span>
+                    <span id="lbl-total-balita-filtered" class="px-3 py-1 bg-indigo-50 text-indigo-700 rounded-lg">0 Balita</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Individual Details List -->
+              <div class="border-t border-slate-100 pt-4">
+                <h5 class="text-xs font-bold text-slate-700 mb-3 uppercase tracking-wider">Daftar Detail Balita Berdasarkan Filter</h5>
+                <div class="overflow-x-auto max-h-64">
+                  <table class="w-full text-left border-collapse text-xs">
+                    <thead>
+                      <tr class="bg-slate-100 text-slate-500 font-bold uppercase text-[10px] sticky top-0">
+                        <th class="py-2 px-3 border-b border-slate-200">No</th>
+                        <th class="py-2 px-3 border-b border-slate-200">Nama Balita</th>
+                        <th class="py-2 px-3 border-b border-slate-200">Orang Tua</th>
+                        <th class="py-2 px-3 border-b border-slate-200">Posyandu</th>
+                        <th class="py-2 px-3 border-b border-slate-200 text-center">Status N/T</th>
+                      </tr>
+                    </thead>
+                    <tbody id="tbody-status-balita-details" class="divide-y divide-slate-100">
+                      <tr>
+                        <td colspan="5" class="py-6 text-center text-slate-400 font-medium">Harap segarkan data dengan menekan tombol Refresh di atas.</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- ==================== SEKSI: TAB PENGECEKAN SASARAN ==================== -->
+          <section id="view-pengecekan" class="view-section animate-fade-in space-y-6">
+            <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm space-y-4">
+              <div class="max-w-xl">
+                <h3 class="font-extrabold text-slate-800 text-lg">Penelusuran Rekam Medis Individu</h3>
+                <p class="text-xs text-slate-500 font-sans mb-4">Masukkan kode unik (ID Kartu) sasaran kesehatan untuk memantau grafik rekam medis tumbuh kembang secara instan.</p>
+
+                <div class="flex gap-2">
+                  <div class="relative flex-grow">
+                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
+                      <i class="fa-solid fa-id-card text-sm"></i>
+                    </div>
+                    <input type="text" id="pencarian-kode-unik" class="block w-full pl-9 pr-3 py-2.5 border border-slate-200 rounded-xl text-xs font-bold tracking-wider focus:ring-2 focus:ring-indigo-500 focus:outline-none bg-slate-50 placeholder-slate-400 outline-none" placeholder="Masukkan ID (Contoh: BLA-MAW1)">
+                  </div>
+                  <button onclick="cariSasaranIndividu()" class="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs rounded-xl flex items-center gap-1.5 transition-all shadow-md">
+                    <i class="fa-solid fa-magnifying-glass"></i> Cari
+                  </button>
+                  <button onclick="refreshPencarianIndividu()" class="p-2.5 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-xl text-xs font-bold border border-slate-200">
+                    <i class="fa-solid fa-arrows-rotate"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Output Hasil Penelusuran -->
+            <div id="hasil-pengecekan" class="hidden space-y-6">
+              <div class="bg-gradient-to-r from-indigo-700 to-sky-600 p-6 rounded-3xl shadow-md text-white">
+                <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                  <div class="flex items-center space-x-4">
+                    <div class="bg-white/10 p-3 rounded-2xl border border-white/10">
+                      <i class="fa-solid fa-user-shield text-2xl text-sky-100 animate-pulse"></i>
+                    </div>
+                    <div>
+                      <span class="text-[9px] bg-white/20 text-sky-100 font-bold px-2.5 py-0.5 rounded-full uppercase border border-white/10" id="badge-kategori-sasaran">KATEGORI</span>
+                      <h4 class="text-xl font-bold mt-1.5" id="lbl-nama-sasaran">-</h4>
+                      <p class="text-xs text-slate-100" id="lbl-detail-ortu">Nama Ortu: -</p>
+                      <p class="text-[10px] text-sky-100 font-semibold mt-1" id="lbl-posyandu-sasaran">Terdaftar di: -</p>
+                    </div>
+                  </div>
+                  <div class="flex items-center gap-2">
+                    <button onclick="exportSasaranExcel()" class="px-3.5 py-2 bg-white/10 hover:bg-white/20 text-white border border-white/15 font-bold text-xs rounded-xl flex items-center gap-1.5 transition-colors">
+                      <i class="fa-regular fa-file-excel"></i> Excel
+                    </button>
+                    <button onclick="exportSasaranPDF()" class="px-3.5 py-2 bg-white/10 hover:bg-white/20 text-white border border-white/15 font-bold text-xs rounded-xl flex items-center gap-1.5 transition-colors">
+                      <i class="fa-regular fa-file-pdf"></i> PDF
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Parameter Opsional (Non-Balita) -->
+              <div id="kontainer-opsi-tambahan" class="hidden bg-white p-5 rounded-3xl border border-slate-200 shadow-sm">
+                <h5 class="text-xs font-bold text-slate-700 mb-3 uppercase tracking-wider">Tampilkan Parameter Tambahan (Opsional):</h5>
+                <div class="flex flex-wrap gap-4">
+                  <label class="inline-flex items-center cursor-pointer">
+                    <input type="checkbox" id="chk-gula" onchange="renderChartsPengecekan()" class="form-checkbox h-4 w-4 text-indigo-600 rounded border-slate-300">
+                    <span class="ml-2 text-xs font-bold text-slate-700">Gula Darah</span>
+                  </label>
+                  <label class="inline-flex items-center cursor-pointer">
+                    <input type="checkbox" id="chk-kolesterol" onchange="renderChartsPengecekan()" class="form-checkbox h-4 w-4 text-indigo-600 rounded border-slate-300">
+                    <span class="ml-2 text-xs font-bold text-slate-700">Kolesterol</span>
+                  </label>
+                  <label class="inline-flex items-center cursor-pointer">
+                    <input type="checkbox" id="chk-asam" onchange="renderChartsPengecekan()" class="form-checkbox h-4 w-4 text-indigo-600 rounded border-slate-300">
+                    <span class="ml-2 text-xs font-bold text-slate-700">Asam Urat</span>
+                  </label>
+                </div>
+              </div>
+
+              <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 items-stretch">
+                <!-- Visualisasi Grafik -->
+                <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm flex flex-col justify-between">
+                  <h4 class="font-bold text-slate-800 text-sm mb-4">Grafik Garis Perkembangan Fisik (Maks 4 Pemeriksaan)</h4>
+                  <div class="relative h-80">
+                    <canvas id="chartGarisTumbuhKembang"></canvas>
+                  </div>
+                </div>
+
+                <!-- Tabel Detail Riwayat -->
+                <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm flex flex-col">
+                  <h4 class="font-bold text-slate-800 text-sm mb-4">Tabel Rekam Medis Pengukuran Terakhir</h4>
+                  <div class="overflow-x-auto max-h-[340px]">
+                    <table class="w-full text-left border-collapse">
+                      <thead class="sticky top-0 z-10">
+                        <tr id="thead-pencatatan-sasaran" class="bg-slate-100 text-slate-500 text-[10px] font-bold uppercase tracking-wider">
+                        </tr>
+                      </thead>
+                      <tbody id="tbody-pencatatan-sasaran" class="divide-y divide-slate-100 text-xs font-sans bg-white">
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
               </div>
             </div>
           </section>
@@ -936,8 +1236,8 @@
 
   <!-- ==================== LOGIC UTAMA SCRIPT ==================== -->
   <script>
-    // MASUKKAN URL WEB APP GOOGLE APPS SCRIPT ANDA DI SINI (Akhiran /exec)
-    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwcJlSwHcCXKk1fxCdbsp7sGgpduo6fyOVfN-NqRFzxmkSzW85pc0cIozlAKUr69E79/exec";
+    // MASUKKAN GOOGLE APPS SCRIPT WEB APP URL DI SINI
+    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzpGl8J2jTSLL2rfjOPWrDZghFgHup62X264TlHEeuem5bq0kNiC8c2K8DQl4vF_Ukp/exec";
 
     let currentUser = null;
     let chartMineral1Instance = null;
@@ -958,6 +1258,12 @@
     let isEditModeActive = false;
     let currentEditRowIndex = -1;
 
+    let reportsChartInstance = null;
+    let chartStatusBalitaInstance = null; // New chart instance for N/T status gizi
+    let currentReportData = null;
+    let lineChartInstance = null;
+    let currentTargetData = null;
+
     const HEALTH_QUOTES = [
       "Kesehatan yang baik bukanlah sesuatu yang dapat kita beli. Namun, sesuatu yang dapat menjadi tabungan yang sangat berharga.",
       "Tubuh yang sehat adalah kuil bagi jiwa. Jagalah dan hargai ia dengan pola hidup yang benar.",
@@ -966,13 +1272,23 @@
       "Mencegah stunting itu mudah dengan pola makan bergizi seimbang dan rutin kunjungan Posyandu."
     ];
 
+
     async function callBackend(action, payload = {}) {
+      if (!API_URL || !API_TOKEN) {
+        Swal.fire({
+          icon: 'warning',
+          title: 'Koneksi Belum Terintegrasi',
+          text: 'Harap atur URL Web App dan Token Keamanan melalui tombol "Konfigurasi Integrasi" di bawah form login.'
+        });
+        return { success: false, message: "Koneksi API belum dikonfigurasi secara lokal." };
+      }
+
       try {
-        const response = await fetch(WEB_APP_URL, {
+        const response = await fetch(API_URL, {
           method: "POST",
           mode: "cors",
-          headers: { "Content-Type": "text/plain" },
-          body: JSON.stringify({ action, payload })
+          headers: { "Content-Type": "text/plain;charset=utf-8" },
+          body: JSON.stringify({ action, token: API_TOKEN, payload })
         });
         
         if (!response.ok) {
@@ -985,9 +1301,35 @@
         console.error("Kesalahan API:", err);
         return { 
           success: false, 
-          message: "Koneksi ke server terputus! Pastikan Script Anda telah dideploy dengan benar (Execute as: Me, Who has access: Anyone) dan Anda menggunakan URL /exec yang valid." 
+          message: "Koneksi ke server Google Apps Script terputus! Pastikan konfigurasi URL Web App dan Token Keamanan Anda sudah benar." 
         };
       }
+    }
+
+    function toggleApiSettings() {
+      const area = document.getElementById('apiSettingsArea');
+      area.classList.toggle('hidden');
+      document.getElementById('api_url_input').value = localStorage.getItem('gopos_api_url') || '';
+      document.getElementById('api_token_input').value = localStorage.getItem('gopos_api_token') || '';
+    }
+
+    function saveApiSettings() {
+      const url = document.getElementById('api_url_input').value.trim();
+      const token = document.getElementById('api_token_input').value.trim();
+
+      if (!url || !token) {
+        Swal.fire('Gagal', 'URL Web App dan Token tidak boleh kosong!', 'error');
+        return;
+      }
+
+      localStorage.setItem('gopos_api_url', url);
+      localStorage.setItem('gopos_api_token', token);
+      
+      API_URL = url;
+      API_TOKEN = token;
+
+      Swal.fire('Sukses', 'Integrasi koneksi API berhasil disimpan secara aman di perangkat ini!', 'success');
+      document.getElementById('apiSettingsArea').classList.add('hidden');
     }
 
     function getRandomQuote() {
@@ -1117,6 +1459,16 @@
         stopLiveScanning();
         stopJepretCamera();
         cancelPemeriksaanForm();
+      } else if (viewId === 'laporan') {
+        pageTitle.innerText = 'Laporan Cakupan Layanan';
+        stopLiveScanning();
+        stopJepretCamera();
+        initLaporanTab();
+      } else if (viewId === 'pengecekan') {
+        pageTitle.innerText = 'Pengecekan Sasaran Individu';
+        stopLiveScanning();
+        stopJepretCamera();
+        initPengecekanTab();
       }
 
       document.querySelectorAll('.nav-btn').forEach(btn => {
@@ -1553,7 +1905,7 @@
                 handleScannedResult(decodedResult.data);
               }, 1200);
             } else {
-              throw new Error("Kode QR tidak terdeteksi. Silakan coba unggah gambar yang lebih fokus.");
+              throw new Error("Kode QR tidak terdeteksi.");
             }
           } catch (err) {
             event.target.value = '';
@@ -2058,6 +2410,814 @@
 
         Swal.fire('Sukses!', 'Berkas Excel berhasil diunduh.', 'success');
       }, 800);
+    }
+
+    // =========================================================================
+    // MODUL: LAPORAN CAKUPAN & DIAGRAM INTERAKTIF (N/T/2T/O/B)
+    // =========================================================================
+    function initLaporanTab() {
+      const d = new Date();
+      document.getElementById('lap-bulan').value = d.getMonth() + 1;
+      document.getElementById('lap-tahun').value = d.getFullYear();
+      document.getElementById('lap-posyandu-filter').value = 'SEMUA';
+      
+      // Reset checkboxes
+      document.getElementById('chk-status-N').checked = true;
+      document.getElementById('chk-status-T').checked = true;
+      document.getElementById('chk-status-2T').checked = true;
+      document.getElementById('chk-status-O').checked = true;
+      document.getElementById('chk-status-B').checked = true;
+
+      fetchLaporanData();
+    }
+
+    async function fetchLaporanData() {
+      const bulan = document.getElementById('lap-bulan').value;
+      const tahun = document.getElementById('lap-tahun').value;
+      
+      showLoading(true, 'Menarik data rekapitulasi cakupan layanan...');
+      const response = await callBackend("getLaporanCakupan", { bulan, tahun });
+      showLoading(false);
+
+      if (response.success && response.data) {
+        currentReportData = response.data;
+        renderLaporanCharts(response.data);
+        renderLaporanTablesAndTren(response.data);
+        updateStatusDiagramAndTable(); // Render the new status gizi interface
+      } else {
+        Swal.fire('Gagal Memuat Laporan', response.message || 'Kesalahan Server', 'error');
+      }
+    }
+
+    function renderLaporanCharts(data) {
+      const ctx = document.getElementById('chartLaporanCakupan').getContext('2d');
+      if (reportsChartInstance) reportsChartInstance.destroy();
+
+      const posyandus = data.posyandulist;
+      const kategoris = data.kategorilist;
+
+      const datasets = kategoris.map((kat, index) => {
+        const colors = ['#4f46e5', '#10b981', '#8b5cf6', '#f43f5e', '#f59e0b', '#64748b'];
+        const bgCol = colors[index % colors.length];
+
+        const counts = posyandus.map(pos => {
+          return (data.rekapKehadiran[pos] && data.rekapKehadiran[pos][kat]) ? data.rekapKehadiran[pos][kat] : 0;
+        });
+
+        return {
+          label: kat,
+          data: counts,
+          backgroundColor: bgCol,
+          borderRadius: 4
+        };
+      });
+
+      reportsChartInstance = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: posyandus,
+          datasets: datasets
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { position: 'bottom', labels: { font: { family: 'Inter', size: 10, weight: '600' } } }
+          },
+          scales: {
+            x: { stacked: true, grid: { display: false } },
+            y: { stacked: true, beginAtZero: true, ticks: { stepSize: 1 } }
+          }
+        }
+      });
+    }
+
+    function renderLaporanTablesAndTren(data) {
+      const containerTren = document.getElementById('container-tren-posyandu');
+      containerTren.innerHTML = '';
+
+      const listPosyandu = Object.keys(data.trenKehadiran);
+      listPosyandu.forEach(pos => {
+        const item = data.trenKehadiran[pos];
+        let colorClass = 'text-slate-500';
+        let bgBadge = 'bg-slate-50 text-slate-600 border-slate-100';
+        let arrow = 'fa-minus';
+
+        if (item.status === 'Naik') {
+          colorClass = 'text-emerald-600';
+          bgBadge = 'bg-emerald-50 text-emerald-600 border-emerald-100';
+          arrow = 'fa-arrow-up';
+        } else if (item.status === 'Turun') {
+          colorClass = 'text-rose-600';
+          bgBadge = 'bg-rose-50 text-rose-600 border-rose-100';
+          arrow = 'fa-arrow-down';
+        }
+
+        containerTren.innerHTML += `
+          <div class="flex items-center justify-between p-3.5 bg-slate-50/50 hover:bg-slate-50 border border-slate-200/60 rounded-2xl transition-all">
+            <div>
+              <h5 class="text-xs font-extrabold text-slate-800">${pos}</h5>
+              <p class="text-[10px] text-slate-400 mt-0.5">Bulan Ini: <strong class="text-slate-700">${item.bulanIni}</strong> | Bulan Lalu: ${item.bulanLalu}</p>
+            </div>
+            <div class="flex flex-col items-end">
+              <span class="px-2.5 py-1 rounded-full text-[10px] font-extrabold border ${bgBadge} flex items-center gap-1">
+                <i class="fa-solid ${arrow}"></i> ${item.persentase}%
+              </span>
+            </div>
+          </div>
+        `;
+      });
+    }
+
+    function updateStatusDiagramAndTable() {
+      if (!currentReportData || !currentReportData.statusGiziBalita) return;
+
+      const selectedPosyandu = document.getElementById('lap-posyandu-filter').value;
+      
+      const showN = document.getElementById('chk-status-N').checked;
+      const showT = document.getElementById('chk-status-T').checked;
+      const show2T = document.getElementById('chk-status-2T').checked;
+      const showO = document.getElementById('chk-status-O').checked;
+      const showB = document.getElementById('chk-status-B').checked;
+
+      const allowedStatuses = [];
+      if (showN) allowedStatuses.push("N (Naik)");
+      if (showT) allowedStatuses.push("T (TURUN)");
+      if (show2T) allowedStatuses.push("2T (TETAP)");
+      if (showO) allowedStatuses.push("O (DatangKembali)");
+      if (showB) allowedStatuses.push("B (BalitaBaru)");
+
+      // Filter balitas
+      const filteredBalita = currentReportData.statusGiziBalita.filter(b => {
+        const posMatch = (selectedPosyandu === 'SEMUA' || b.posyandu.toUpperCase().trim() === selectedPosyandu.toUpperCase().trim());
+        
+        const dbStatus = (b.statusGizi || '').trim();
+        let normalizedStatus = "";
+        if (dbStatus.startsWith("2T")) normalizedStatus = "2T (TETAP)";
+        else if (dbStatus.startsWith("N")) normalizedStatus = "N (Naik)";
+        else if (dbStatus.startsWith("T")) normalizedStatus = "T (TURUN)";
+        else if (dbStatus.startsWith("O")) normalizedStatus = "O (DatangKembali)";
+        else if (dbStatus.startsWith("B")) normalizedStatus = "B (BalitaBaru)";
+        
+        const statusMatch = allowedStatuses.includes(normalizedStatus);
+        return posMatch && statusMatch;
+      });
+
+      // Calculate counts
+      const counts = {
+        "N (Naik)": 0,
+        "T (TURUN)": 0,
+        "2T (TETAP)": 0,
+        "O (DatangKembali)": 0,
+        "B (BalitaBaru)": 0
+      };
+
+      filteredBalita.forEach(b => {
+        const dbStatus = (b.statusGizi || '').trim();
+        if (dbStatus.startsWith("2T")) counts["2T (TETAP)"]++;
+        else if (dbStatus.startsWith("N")) counts["N (Naik)"]++;
+        else if (dbStatus.startsWith("T")) counts["T (TURUN)"]++;
+        else if (dbStatus.startsWith("O")) counts["O (DatangKembali)"]++;
+        else if (dbStatus.startsWith("B")) counts["B (BalitaBaru)"]++;
+      });
+
+      const totalFiltered = filteredBalita.length;
+      document.getElementById('lbl-total-balita-filtered').innerText = `${totalFiltered} Balita`;
+
+      // Render Summary Table
+      const tbodySummary = document.getElementById('tbody-status-summary');
+      tbodySummary.innerHTML = '';
+
+      const statusMetadata = [
+        { label: "N (Naik)", code: "N", color: "#10b981" },
+        { label: "T (TURUN)", code: "T", color: "#ef4444" },
+        { label: "2T (TETAP)", code: "2T", color: "#3b82f6" },
+        { label: "O (DatangKembali)", code: "O", color: "#f59e0b" },
+        { label: "B (BalitaBaru)", code: "B", color: "#8b5cf6" }
+      ];
+
+      statusMetadata.forEach(stat => {
+        if (!allowedStatuses.includes(stat.label)) return;
+
+        const count = counts[stat.label];
+        const pct = totalFiltered > 0 ? ((count / totalFiltered) * 100).toFixed(1) : "0.0";
+
+        tbodySummary.innerHTML += `
+          <tr class="hover:bg-slate-50 transition-colors">
+            <td class="py-2.5 px-3 flex items-center gap-2">
+              <span class="w-3 h-3 rounded-full" style="background-color: ${stat.color}"></span>
+              <span class="font-bold text-slate-700">${stat.label}</span>
+            </td>
+            <td class="py-2.5 px-3 text-center font-bold text-slate-500">${stat.code}</td>
+            <td class="py-2.5 px-3 text-center font-extrabold text-slate-800">${count}</td>
+            <td class="py-2.5 px-3 text-right font-extrabold text-indigo-600">${pct}%</td>
+          </tr>
+        `;
+      });
+
+      // Render Detail Table
+      const tbodyDetails = document.getElementById('tbody-status-balita-details');
+      tbodyDetails.innerHTML = '';
+      if (filteredBalita.length === 0) {
+        tbodyDetails.innerHTML = `
+          <tr>
+            <td colspan="5" class="py-6 text-center text-slate-400 font-medium">Tidak ada data balita yang sesuai filter.</td>
+          </tr>
+        `;
+      } else {
+        filteredBalita.forEach((b, index) => {
+          let badgeColor = "bg-slate-100 text-slate-700";
+          const dbStatus = (b.statusGizi || '').trim();
+          if (dbStatus.startsWith("N")) badgeColor = "bg-emerald-50 text-emerald-700 border border-emerald-100";
+          else if (dbStatus.startsWith("T")) badgeColor = "bg-rose-50 text-rose-700 border border-rose-100";
+          else if (dbStatus.startsWith("2T")) badgeColor = "bg-blue-50 text-blue-700 border border-blue-100";
+          else if (dbStatus.startsWith("O")) badgeColor = "bg-amber-50 text-amber-700 border border-amber-100";
+          else if (dbStatus.startsWith("B")) badgeColor = "bg-purple-50 text-purple-700 border border-purple-100";
+
+          tbodyDetails.innerHTML += `
+            <tr class="hover:bg-slate-50/55 transition-colors">
+              <td class="py-2.5 px-3 font-semibold text-slate-500">${index + 1}</td>
+              <td class="py-2.5 px-3 font-bold text-slate-800">${b.nama}</td>
+              <td class="py-2.5 px-3 font-semibold text-slate-500">${b.ortu || '-'}</td>
+              <td class="py-2.5 px-3 font-bold text-slate-600">${b.posyandu}</td>
+              <td class="py-2.5 px-3 text-center">
+                <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold ${badgeColor}">${b.statusGizi}</span>
+              </td>
+            </tr>
+          `;
+        });
+      }
+
+      // Draw Doughnut status chart
+      const activeLabels = [];
+      const activeData = [];
+      const activeColors = [];
+
+      statusMetadata.forEach(stat => {
+        if (allowedStatuses.includes(stat.label)) {
+          activeLabels.push(stat.label);
+          activeData.push(counts[stat.label]);
+          activeColors.push(stat.color);
+        }
+      });
+
+      const canvas = document.getElementById('chartStatusBalita');
+      if (canvas) {
+        const ctx = canvas.getContext('2d');
+        if (chartStatusBalitaInstance) chartStatusBalitaInstance.destroy();
+
+        const allZero = activeData.reduce((sum, val) => sum + val, 0) === 0;
+
+        chartStatusBalitaInstance = new Chart(ctx, {
+          type: 'doughnut',
+          data: {
+            labels: allZero ? ['Tidak ada data'] : activeLabels,
+            datasets: [{
+              data: allZero ? [1] : activeData,
+              backgroundColor: allZero ? ['#e2e8f0'] : activeColors,
+              borderColor: '#ffffff',
+              borderWidth: 2
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: {
+                position: 'bottom',
+                labels: {
+                  boxWidth: 10,
+                  padding: 8,
+                  font: { family: 'Inter', size: 9, weight: '600' }
+                }
+              }
+            },
+            cutout: '65%'
+          }
+        });
+      }
+    }
+
+    function exportLaporanExcel() {
+      if (!currentReportData) {
+        Swal.fire('Info', 'Data laporan kosong. Lakukan refresh periode terlebih dahulu.', 'warning');
+        return;
+      }
+
+      const wb = XLSX.utils.book_new();
+
+      // Sheet 1: Tren Kehadiran
+      const rowTren = Object.keys(currentReportData.trenKehadiran).map(pos => {
+        const item = currentReportData.trenKehadiran[pos];
+        return {
+          'Nama Posyandu': pos,
+          'Kehadiran Bulan Ini': item.bulanIni,
+          'Kehadiran Bulan Lalu': item.bulanLalu,
+          'Selisih Persentase (%)': item.persentase + '%',
+          'Keterangan': item.status
+        };
+      });
+      const ws1 = XLSX.utils.json_to_sheet(rowTren);
+      XLSX.utils.book_append_sheet(wb, ws1, "Tren Kehadiran");
+
+      // Sheet 2: Ringkasan Status Balita (Sesuai Filter Aktif)
+      const selectedPosyandu = document.getElementById('lap-posyandu-filter').value;
+      const ws2Data = [];
+
+      const showN = document.getElementById('chk-status-N').checked;
+      const showT = document.getElementById('chk-status-T').checked;
+      const show2T = document.getElementById('chk-status-2T').checked;
+      const showO = document.getElementById('chk-status-O').checked;
+      const showB = document.getElementById('chk-status-B').checked;
+
+      const allowedStatuses = [];
+      if (showN) allowedStatuses.push("N (Naik)");
+      if (showT) allowedStatuses.push("T (TURUN)");
+      if (show2T) allowedStatuses.push("2T (TETAP)");
+      if (showO) allowedStatuses.push("O (DatangKembali)");
+      if (showB) allowedStatuses.push("B (BalitaBaru)");
+
+      const filteredBalita = currentReportData.statusGiziBalita.filter(b => {
+        const posMatch = (selectedPosyandu === 'SEMUA' || b.posyandu.toUpperCase().trim() === selectedPosyandu.toUpperCase().trim());
+        const dbStatus = (b.statusGizi || '').trim();
+        let normalizedStatus = "";
+        if (dbStatus.startsWith("2T")) normalizedStatus = "2T (TETAP)";
+        else if (dbStatus.startsWith("N")) normalizedStatus = "N (Naik)";
+        else if (dbStatus.startsWith("T")) normalizedStatus = "T (TURUN)";
+        else if (dbStatus.startsWith("O")) normalizedStatus = "O (DatangKembali)";
+        else if (dbStatus.startsWith("B")) normalizedStatus = "B (BalitaBaru)";
+        return posMatch && allowedStatuses.includes(normalizedStatus);
+      });
+
+      const counts = { "N (Naik)": 0, "T (TURUN)": 0, "2T (TETAP)": 0, "O (DatangKembali)": 0, "B (BalitaBaru)": 0 };
+      filteredBalita.forEach(b => {
+        const dbStatus = (b.statusGizi || '').trim();
+        if (dbStatus.startsWith("2T")) counts["2T (TETAP)"]++;
+        else if (dbStatus.startsWith("N")) counts["N (Naik)"]++;
+        else if (dbStatus.startsWith("T")) counts["T (TURUN)"]++;
+        else if (dbStatus.startsWith("O")) counts["O (DatangKembali)"]++;
+        else if (dbStatus.startsWith("B")) counts["B (BalitaBaru)"]++;
+      });
+
+      const statusMetadata = [
+        { label: "N (Naik)", code: "N" },
+        { label: "T (TURUN)", code: "T" },
+        { label: "2T (TETAP)", code: "2T" },
+        { label: "O (DatangKembali)", code: "O" },
+        { label: "B (BalitaBaru)", code: "B" }
+      ];
+
+      statusMetadata.forEach(stat => {
+        if (!allowedStatuses.includes(stat.label)) return;
+        const count = counts[stat.label];
+        const pct = filteredBalita.length > 0 ? ((count / filteredBalita.length) * 100).toFixed(1) : "0.0";
+        ws2Data.push({
+          'Status Balita': stat.label,
+          'Kode': stat.code,
+          'Jumlah': count,
+          'Persentase (%)': pct + '%'
+        });
+      });
+
+      const ws2 = XLSX.utils.json_to_sheet(ws2Data);
+      XLSX.utils.book_append_sheet(wb, ws2, "Statistik Gizi");
+
+      // Sheet 3: Detail Anggota Balita Terfilter
+      const ws3Data = filteredBalita.map((b, idx) => ({
+        'No': idx + 1,
+        'Nama Balita': b.nama,
+        'Orang Tua': b.ortu || '-',
+        'Posyandu': b.posyandu,
+        'Status N/T': b.statusGizi
+      }));
+      const ws3 = XLSX.utils.json_to_sheet(ws3Data);
+      XLSX.utils.book_append_sheet(wb, ws3, "Daftar Detail Balita");
+
+      const bln = document.getElementById('lap-bulan').value;
+      const thn = document.getElementById('lap-tahun').value;
+      XLSX.writeFile(wb, `Cakupan_Posyandu_Gonoharjo_${bln}_${thn}.xlsx`);
+      Swal.fire('Sukses', 'Berkas Laporan Excel berhasil diunduh.', 'success');
+    }
+
+    function exportLaporanPDF() {
+      if (!currentReportData) return;
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF('p', 'mm', 'a4');
+
+      const blnText = document.getElementById('lap-bulan').options[document.getElementById('lap-bulan').selectedIndex].text;
+      const thn = document.getElementById('lap-tahun').value;
+      const selectedPosyandu = document.getElementById('lap-posyandu-filter').value;
+
+      doc.setFont("Inter", "bold");
+      doc.setFontSize(13);
+      doc.setTextColor(15, 23, 42);
+      doc.text("LAPORAN CAKUPAN LAYANAN KESEHATAN DESA GONOHARJO", 105, 15, null, null, "center");
+      doc.setFontSize(10);
+      doc.setFont("Inter", "normal");
+      doc.text(`Periode Evaluasi: ${blnText.toUpperCase()} ${thn} | Filter Posyandu: ${selectedPosyandu}`, 105, 21, null, null, "center");
+
+      doc.setLineWidth(0.4);
+      doc.setDrawColor(226, 232, 240);
+      doc.line(15, 25, 195, 25);
+
+      doc.setFontSize(10);
+      doc.setFont("Inter", "bold");
+      doc.text("1. Tren Pertumbuhan & Partisipasi Wilayah Posyandu", 15, 32);
+
+      const bodyKehadiran = Object.keys(currentReportData.trenKehadiran).map((pos, idx) => {
+        const item = currentReportData.trenKehadiran[pos];
+        return [idx + 1, pos, item.bulanIni, item.bulanLalu, `${item.persentase}%`, item.status];
+      });
+
+      doc.autoTable({
+        startY: 36,
+        head: [['No', 'Posyandu', 'Kehadiran Bulan Ini', 'Kehadiran Bulan Lalu', 'Persentase', 'Keterangan']],
+        body: bodyKehadiran,
+        theme: 'grid',
+        headStyles: { fillColor: [79, 70, 229] }
+      });
+
+      // ADD DIAGRAM IMAGE AND TABLE TO PAGE 2 OR NEXT SECTION
+      const nextY = doc.lastAutoTable.finalY + 12;
+      doc.setFont("Inter", "bold");
+      doc.text("2. Distribusi Status Tumbuh Kembang Balita (N/T/2T/O/B)", 15, nextY);
+
+      // Filter Balita matching active states
+      const showN = document.getElementById('chk-status-N').checked;
+      const showT = document.getElementById('chk-status-T').checked;
+      const show2T = document.getElementById('chk-status-2T').checked;
+      const showO = document.getElementById('chk-status-O').checked;
+      const showB = document.getElementById('chk-status-B').checked;
+
+      const allowedStatuses = [];
+      if (showN) allowedStatuses.push("N (Naik)");
+      if (showT) allowedStatuses.push("T (TURUN)");
+      if (show2T) allowedStatuses.push("2T (TETAP)");
+      if (showO) allowedStatuses.push("O (DatangKembali)");
+      if (showB) allowedStatuses.push("B (BalitaBaru)");
+
+      const filteredBalita = currentReportData.statusGiziBalita.filter(b => {
+        const posMatch = (selectedPosyandu === 'SEMUA' || b.posyandu.toUpperCase().trim() === selectedPosyandu.toUpperCase().trim());
+        const dbStatus = (b.statusGizi || '').trim();
+        let normalizedStatus = "";
+        if (dbStatus.startsWith("2T")) normalizedStatus = "2T (TETAP)";
+        else if (dbStatus.startsWith("N")) normalizedStatus = "N (Naik)";
+        else if (dbStatus.startsWith("T")) normalizedStatus = "T (TURUN)";
+        else if (dbStatus.startsWith("O")) normalizedStatus = "O (DatangKembali)";
+        else if (dbStatus.startsWith("B")) normalizedStatus = "B (BalitaBaru)";
+        return posMatch && allowedStatuses.includes(normalizedStatus);
+      });
+
+      const counts = { "N (Naik)": 0, "T (TURUN)": 0, "2T (TETAP)": 0, "O (DatangKembali)": 0, "B (BalitaBaru)": 0 };
+      filteredBalita.forEach(b => {
+        const dbStatus = (b.statusGizi || '').trim();
+        if (dbStatus.startsWith("2T")) counts["2T (TETAP)"]++;
+        else if (dbStatus.startsWith("N")) counts["N (Naik)"]++;
+        else if (dbStatus.startsWith("T")) counts["T (TURUN)"]++;
+        else if (dbStatus.startsWith("O")) counts["O (DatangKembali)"]++;
+        else if (dbStatus.startsWith("B")) counts["B (BalitaBaru)"]++;
+      });
+
+      const statusMetadata = [
+        { label: "N (Naik)", code: "N" },
+        { label: "T (TURUN)", code: "T" },
+        { label: "2T (TETAP)", code: "2T" },
+        { label: "O (DatangKembali)", code: "O" },
+        { label: "B (BalitaBaru)", code: "B" }
+      ];
+
+      // Draw diagram image in PDF
+      const canvas = document.getElementById('chartStatusBalita');
+      if (canvas) {
+        const chartImg = canvas.toDataURL('image/png', 1.0);
+        doc.addImage(chartImg, 'PNG', 15, nextY + 4, 70, 48);
+      }
+
+      // Draw Ringkasan counts inside PDF side table
+      const rowsTable = [];
+      statusMetadata.forEach(stat => {
+        if (!allowedStatuses.includes(stat.label)) return;
+        const count = counts[stat.label];
+        const pct = filteredBalita.length > 0 ? ((count / filteredBalita.length) * 100).toFixed(1) : "0.0";
+        rowsTable.push([stat.label, stat.code, count, `${pct}%`]);
+      });
+
+      doc.autoTable({
+        startY: nextY + 4,
+        margin: { left: 95 },
+        tableWidth: 100,
+        head: [['Status Balita', 'Kode', 'Jumlah', 'Persen']],
+        body: rowsTable,
+        theme: 'striped',
+        headStyles: { fillColor: [79, 70, 229] },
+        styles: { fontSize: 8, cellPadding: 2 }
+      });
+
+      // Break page for detail list
+      doc.addPage();
+      doc.setFont("Inter", "bold");
+      doc.setFontSize(10);
+      doc.text("3. Daftar Rincian Detail Anggota Balita", 15, 15);
+
+      const bodyDetails = filteredBalita.map((b, idx) => [
+        idx + 1, b.nama, b.ortu || '-', b.posyandu, b.statusGizi
+      ]);
+
+      doc.autoTable({
+        startY: 19,
+        head: [['No', 'Nama Balita', 'Orang Tua', 'Posyandu', 'Status']],
+        body: bodyDetails,
+        theme: 'grid',
+        headStyles: { fillColor: [16, 185, 129] }
+      });
+
+      doc.save(`Cakupan_Posyandu_Gonoharjo_${blnText}_${thn}.pdf`);
+      Swal.fire('Sukses', 'Berkas Laporan PDF berhasil diunduh.', 'success');
+    }
+
+    // =========================================================================
+    // MODUL: PENGECEKAN SASARAN INDIVIDU (TRENS LINE CHART)
+    // =========================================================================
+    function initPengecekanTab() {
+      document.getElementById('pencarian-kode-unik').value = '';
+      document.getElementById('hasil-pengecekan').classList.add('hidden');
+    }
+
+    async function cariSasaranIndividu() {
+      const kode = document.getElementById('pencarian-kode-unik').value.trim();
+      if (!kode) {
+        Swal.fire('Perhatian', 'Harap masukkan ID Kode Unik terlebih dahulu.', 'warning');
+        return;
+      }
+
+      showLoading(true, 'Menelusuri riwayat database...');
+      const response = await callBackend("getPemeriksaanPerSasaran", { kodeUnik: kode });
+      showLoading(false);
+
+      if (response.success && response.data) {
+        currentTargetData = response.data;
+        document.getElementById('hasil-pengecekan').classList.remove('hidden');
+        renderProfilSasaran(response.data);
+        renderChartsPengecekan();
+        renderTabelPengecekan(response.data);
+      } else {
+        document.getElementById('hasil-pengecekan').classList.add('hidden');
+        Swal.fire('Tidak Ditemukan', response.message || 'Anggota tidak ditemukan.', 'info');
+      }
+    }
+
+    function refreshPencarianIndividu() {
+      initPengecekanTab();
+    }
+
+    function renderProfilSasaran(data) {
+      document.getElementById('lbl-nama-sasaran').innerText = data.biodata.nama;
+      document.getElementById('lbl-posyandu-sasaran').innerText = `Terdaftar di: ${data.biodata.posyandu} | NIK: ${data.biodata.nik}`;
+      
+      if (data.kategori === 'BALITA') {
+        document.getElementById('badge-kategori-sasaran').innerText = 'Sasaran Anak Balita';
+        document.getElementById('lbl-detail-ortu').innerText = `Nama Orang Tua: ${data.biodata.namaOrtu}`;
+        document.getElementById('lbl-detail-ortu').classList.remove('hidden');
+        document.getElementById('kontainer-opsi-tambahan').classList.add('hidden');
+      } else {
+        document.getElementById('badge-kategori-sasaran').innerText = `Kategori: ${data.biodata.kategori}`;
+        document.getElementById('lbl-detail-ortu').classList.add('hidden');
+        document.getElementById('kontainer-opsi-tambahan').classList.remove('hidden');
+      }
+    }
+
+    function renderChartsPengecekan() {
+      if (!currentTargetData) return;
+      const ctx = document.getElementById('chartGarisTumbuhKembang').getContext('2d');
+      if (lineChartInstance) lineChartInstance.destroy();
+
+      const riwayat = currentTargetData.riwayat;
+      const labels = riwayat.map(item => {
+        const date = new Date(item.timestamp);
+        return `${date.getDate()}/${date.getMonth() + 1}`;
+      });
+
+      const datasets = [];
+
+      if (currentTargetData.kategori === 'BALITA') {
+        datasets.push({
+          label: 'Berat Badan (kg)',
+          data: riwayat.map(item => item.bb),
+          borderColor: '#4f46e5',
+          backgroundColor: '#4f46e5',
+          tension: 0.3,
+          fill: false
+        });
+        datasets.push({
+          label: 'Panjang/Tinggi Badan (cm)',
+          data: riwayat.map(item => item.tb),
+          borderColor: '#10b981',
+          backgroundColor: '#10b981',
+          tension: 0.3,
+          fill: false
+        });
+      } else {
+        datasets.push({
+          label: 'Berat Badan (kg)',
+          data: riwayat.map(item => item.bb),
+          borderColor: '#4f46e5',
+          backgroundColor: '#4f46e5',
+          tension: 0.3,
+          fill: false
+        });
+
+        if (document.getElementById('chk-gula').checked) {
+          datasets.push({
+            label: 'Gula Darah (mg/dL)',
+            data: riwayat.map(item => item.gula),
+            borderColor: '#f43f5e',
+            backgroundColor: '#f43f5e',
+            tension: 0.3,
+            fill: false
+          });
+        }
+        if (document.getElementById('chk-kolesterol').checked) {
+          datasets.push({
+            label: 'Kolesterol (mg/dL)',
+            data: riwayat.map(item => item.kolesterol),
+            borderColor: '#f59e0b',
+            backgroundColor: '#f59e0b',
+            tension: 0.3,
+            fill: false
+          });
+        }
+        if (document.getElementById('chk-asam').checked) {
+          datasets.push({
+            label: 'Asam Urat (mg/dL)',
+            data: riwayat.map(item => item.asamUrat),
+            borderColor: '#8b5cf6',
+            backgroundColor: '#8b5cf6',
+            tension: 0.3,
+            fill: false
+          });
+        }
+      }
+
+      lineChartInstance = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: labels,
+          datasets: datasets
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { position: 'top', labels: { font: { family: 'Inter', size: 9, weight: '600' } } }
+          },
+          scales: {
+            x: { grid: { display: false } },
+            y: { beginAtZero: false }
+          }
+        }
+      });
+    }
+
+    function renderTabelPengecekan(data) {
+      const thead = document.getElementById('thead-pencatatan-sasaran');
+      const tbody = document.getElementById('tbody-pencatatan-sasaran');
+      thead.innerHTML = '';
+      tbody.innerHTML = '';
+
+      const riwayat = data.riwayat;
+
+      if (data.kategori === 'BALITA') {
+        thead.innerHTML = `
+          <tr>
+            <th class="py-3 px-3">Tanggal</th>
+            <th class="py-3 px-3 text-center">BB (kg)</th>
+            <th class="py-3 px-3 text-center">TB (cm)</th>
+            <th class="py-3 px-3 text-center">BB/U</th>
+            <th class="py-3 px-3 text-center">Status Gizi</th>
+          </tr>
+        `;
+
+        riwayat.forEach((row, idx) => {
+          const dStr = new Date(row.timestamp).toLocaleDateString('id-ID', { day: '2-digit', month: '2-digit' });
+          let trendBB = '';
+          if (idx > 0) {
+            const selisih = row.bb - riwayat[idx - 1].bb;
+            trendBB = selisih > 0 ? ' <span class="text-emerald-500 text-[10px]"><i class="fa-solid fa-arrow-up"></i></span>' : 
+                      (selisih < 0 ? ' <span class="text-rose-500 text-[10px]"><i class="fa-solid fa-arrow-down"></i></span>' : ' <span class="text-slate-400 text-[10px]"><i class="fa-solid fa-equals"></i></span>');
+          }
+
+          tbody.innerHTML += `
+            <tr class="hover:bg-slate-50 transition-colors">
+              <td class="py-3 px-3 font-semibold text-slate-600">${dStr}</td>
+              <td class="py-3 px-3 text-center font-bold text-slate-800">${row.bb}${trendBB}</td>
+              <td class="py-3 px-3 text-center font-semibold text-slate-600">${row.tb}</td>
+              <td class="py-3 px-3 text-center font-semibold text-slate-500">${row.bbu}</td>
+              <td class="py-3 px-3 text-center">
+                <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-indigo-50 text-indigo-600 border border-indigo-100">${row.statusGizi}</span>
+              </td>
+            </tr>
+          `;
+        });
+      } else {
+        thead.innerHTML = `
+          <tr>
+            <th class="py-3 px-3">Tanggal</th>
+            <th class="py-3 px-3 text-center">Tensi (mmHg)</th>
+            <th class="py-3 px-3 text-center">Gula</th>
+            <th class="py-3 px-3 text-center">Kolesterol</th>
+            <th class="py-3 px-3 text-center">Asam Urat</th>
+          </tr>
+        `;
+
+        riwayat.forEach(row => {
+          const dStr = new Date(row.timestamp).toLocaleDateString('id-ID', { day: '2-digit', month: '2-digit' });
+          tbody.innerHTML += `
+            <tr class="hover:bg-slate-50 transition-colors">
+              <td class="py-3 px-3 font-semibold text-slate-600">${dStr}</td>
+              <td class="py-3 px-3 text-center font-bold text-slate-800">${row.tensi}</td>
+              <td class="py-3 px-3 text-center font-semibold text-slate-600">${row.gula}</td>
+              <td class="py-3 px-3 text-center font-semibold text-slate-600">${row.kolesterol}</td>
+              <td class="py-3 px-3 text-center font-semibold text-slate-600">${row.asamUrat}</td>
+            </tr>
+          `;
+        });
+      }
+    }
+
+    function exportSasaranExcel() {
+      if (!currentTargetData) return;
+      const formattedData = currentTargetData.riwayat.map((row) => {
+        const baseObj = {
+          'Kode Unik': currentTargetData.biodata.kodeUnik,
+          'Nama Lengkap': currentTargetData.biodata.nama,
+          'Tanggal Pemeriksaan': new Date(row.timestamp).toLocaleDateString('id-ID'),
+          'Berat Badan (kg)': row.bb,
+          'Tinggi/Panjang Badan (cm)': row.tb
+        };
+        if (currentTargetData.kategori === 'BALITA') {
+          baseObj['Status Gizi'] = row.statusGizi;
+          baseObj['BB menurut Umur'] = row.bbu;
+          baseObj['PB/TB menurut Umur'] = row.tbu;
+          baseObj['BB menurut PB/TB'] = row.bbtb;
+        } else {
+          baseObj['Tekanan Darah (Tensi)'] = row.tensi;
+          baseObj['Gula Darah (mg/dL)'] = row.gula;
+          baseObj['Kolesterol (mg/dL)'] = row.kolesterol;
+          baseObj['Asam Urat'] = row.asamUrat;
+        }
+        return baseObj;
+      });
+
+      const ws = XLSX.utils.json_to_sheet(formattedData);
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, "Rekam Medis");
+      XLSX.writeFile(wb, `Rekam_Medis_${currentTargetData.biodata.nama}.xlsx`);
+      Swal.fire('Sukses', 'Data riwayat pemeriksaan berhasil diekspor.', 'success');
+    }
+
+    function exportSasaranPDF() {
+      if (!currentTargetData) return;
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF('p', 'mm', 'a4');
+
+      doc.setFont("Inter", "bold");
+      doc.setFontSize(14);
+      doc.setTextColor(15, 23, 42);
+      doc.text("KARTU PERKEMBANGAN KESEHATAN INDIVIDU", 15, 15);
+      doc.setFontSize(10);
+      doc.setFont("Inter", "normal");
+      
+      doc.text(`ID Kode Unik : ${currentTargetData.biodata.kodeUnik}`, 15, 22);
+      doc.text(`Nama Anggota : ${currentTargetData.biodata.nama}`, 15, 27);
+      doc.text(`Posyandu     : ${currentTargetData.biodata.posyandu}`, 15, 32);
+
+      let tableHead = [];
+      let tableBody = [];
+
+      if (currentTargetData.kategori === 'BALITA') {
+        tableHead = [['Tanggal', 'BB (kg)', 'TB (cm)', 'BB/U', 'Status Gizi']];
+        tableBody = currentTargetData.riwayat.map(row => [
+          new Date(row.timestamp).toLocaleDateString('id-ID'),
+          row.bb, row.tb, row.bbu, row.statusGizi
+        ]);
+      } else {
+        tableHead = [['Tanggal', 'Tensi (mmHg)', 'Gula', 'Kolesterol', 'Asam Urat']];
+        tableBody = currentTargetData.riwayat.map(row => [
+          new Date(row.timestamp).toLocaleDateString('id-ID'),
+          row.tensi, row.gula, row.kolesterol, row.asamUrat
+        ]);
+      }
+
+      doc.autoTable({
+        startY: 37,
+        head: tableHead,
+        body: tableBody,
+        theme: 'grid',
+        headStyles: { fillColor: [79, 70, 229] }
+      });
+
+      doc.save(`Rekam_Medis_${currentTargetData.biodata.nama}.pdf`);
+      Swal.fire('Sukses', 'Kartu Kesehatan PDF berhasil diunduh.', 'success');
     }
 
     window.addEventListener('resize', function() {
